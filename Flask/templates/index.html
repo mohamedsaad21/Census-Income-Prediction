@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Income Predictor</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #eef2f3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      .container {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 450px;
+      }
+      h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #555;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+      }
+      input:focus,
+      select:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+
+      button {
+        width: 100%;
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 12px;
+        margin-top: 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+
+      #result-card {
+        display: none;
+        margin-top: 25px;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.3rem;
+        animation: fadeIn 0.5s;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>💰 Income Predictor</h2>
+      <form id="prediction-form">
+        <div class="form-group">
+          <label>Age</label>
+          <input type="number" name="age" placeholder="e.g. 35" required />
+        </div>
+
+        <div class="form-group">
+          <label>Workclass</label>
+          <select name="workclass">
+            <option value="Private">Private</option>
+            <option value="Self-emp-not-inc">Self-employed (Not Inc)</option>
+            <option value="Self-emp-inc">Self-employed (Inc)</option>
+            <option value="Federal-gov">Federal Government</option>
+            <option value="Local-gov">Local Government</option>
+            <option value="State-gov">State Government</option>
+            <option value="Without-pay">Without Pay</option>
+            <option value="Never-worked">Never Worked</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Education Level</label>
+          <select name="education">
+            <option value="Bachelors">Bachelors</option>
+            <option value="HS-grad">High School Grad</option>
+            <option value="11th">11th Grade</option>
+            <option value="Masters">Masters</option>
+            <option value="9th">9th Grade</option>
+            <option value="Some-college">Some College</option>
+            <option value="Assoc-acdm">Associate (Academic)</option>
+            <option value="Assoc-voc">Associate (Vocational)</option>
+            <option value="7th-8th">7th-8th Grade</option>
+            <option value="Doctorate">Doctorate</option>
+            <option value="Prof-school">Prof-School</option>
+            <option value="5th-6th">5th-6th Grade</option>
+            <option value="10th">10th Grade</option>
+            <option value="1st-4th">1st-4th Grade</option>
+            <option value="Preschool">Preschool</option>
+            <option value="12th">12th Grade</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Education Number (Years)</label>
+          <input
+            type="number"
+            name="education_num"
+            placeholder="e.g. 13"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Marital Status</label>
+          <select name="marital_status">
+            <option value="Married-civ-spouse">Married (Civil Spouse)</option>
+            <option value="Divorced">Divorced</option>
+            <option value="Never-married">Never Married</option>
+            <option value="Separated">Separated</option>
+            <option value="Widowed">Widowed</option>
+            <option value="Married-spouse-absent">
+              Married (Spouse Absent)
+            </option>
+            <option value="Married-AF-spouse">Married (AF Spouse)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Occupation</label>
+          <select name="occupation">
+            <option value="Tech-support">Tech Support</option>
+            <option value="Craft-repair">Craft Repair</option>
+            <option value="Other-service">Other Service</option>
+            <option value="Sales">Sales</option>
+            <option value="Exec-managerial">Exec Managerial</option>
+            <option value="Prof-specialty">Prof Specialty</option>
+            <option value="Handlers-cleaners">Handlers Cleaners</option>
+            <option value="Machine-op-inspct">Machine Op Inspct</option>
+            <option value="Adm-clerical">Adm Clerical</option>
+            <option value="Farming-fishing">Farming Fishing</option>
+            <option value="Transport-moving">Transport Moving</option>
+            <option value="Priv-house-serv">Priv House Serv</option>
+            <option value="Protective-serv">Protective Serv</option>
+            <option value="Armed-Forces">Armed Forces</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Relationship</label>
+          <select name="relationship">
+            <option value="Wife">Wife</option>
+            <option value="Own-child">Own Child</option>
+            <option value="Husband">Husband</option>
+            <option value="Not-in-family">Not in Family</option>
+            <option value="Other-relative">Other Relative</option>
+            <option value="Unmarried">Unmarried</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Race</label>
+          <select name="race">
+            <option value="White">White</option>
+            <option value="Asian-Pac-Islander">Asian-Pac-Islander</option>
+            <option value="Amer-Indian-Eskimo">Amer-Indian-Eskimo</option>
+            <option value="Other">Other</option>
+            <option value="Black">Black</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Sex</label>
+          <select name="sex">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Hours per Week</label>
+          <input
+            type="number"
+            name="hours_per_week"
+            placeholder="e.g. 40"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Native Country</label>
+          <select name="native_country">
+            <option value="United-States">United States</option>
+            <option value="Mexico">Mexico</option>
+            <option value="Philippines">Philippines</option>
+            <option value="Germany">Germany</option>
+            <option value="Canada">Canada</option>
+            <option value="Puerto-Rico">Puerto Rico</option>
+            <option value="El-Salvador">El Salvador</option>
+            <option value="India">India</option>
+            <option value="Cuba">Cuba</option>
+            <option value="England">England</option>
+            <option value="China">China</option>
+            <option value="South">South</option>
+            <option value="Jamaica">Jamaica</option>
+            <option value="Italy">Italy</option>
+            <option value="Dominican-Republic">Dominican Republic</option>
+            <option value="Japan">Japan</option>
+            <option value="Guatemala">Guatemala</option>
+            <option value="Vietnam">Vietnam</option>
+            <option value="Columbia">Columbia</option>
+            <option value="Poland">Poland</option>
+            <option value="Taiwan">Taiwan</option>
+            <option value="Haiti">Haiti</option>
+            <option value="Iran">Iran</option>
+            <option value="Portugal">Portugal</option>
+            <option value="Nicaragua">Nicaragua</option>
+            <option value="Peru">Peru</option>
+            <option value="Greece">Greece</option>
+            <option value="France">France</option>
+            <option value="Ecuador">Ecuador</option>
+            <option value="Ireland">Ireland</option>
+            <option value="Hong">Hong</option>
+            <option value="Cambodia">Cambodia</option>
+            <option value="Trinadad&Tobago">Trinadad & Tobago</option>
+            <option value="Laos">Laos</option>
+            <option value="Thailand">Thailand</option>
+            <option value="Yugoslavia">Yugoslavia</option>
+            <option value="Outlying-US(Guam-USVI-etc)">Outlying US</option>
+            <option value="Honduras">Honduras</option>
+            <option value="Hungary">Hungary</option>
+            <option value="Scotland">Scotland</option>
+            <option value="Holand-Netherlands">Holand-Netherlands</option>
+          </select>
+        </div>
+
+        <button type="submit">Predict Income</button>
+      </form>
+
+      <div id="result-card"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById("prediction-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const card = document.getElementById("result-card");
+
+          // Show loading state
+          card.style.display = "block";
+          card.style.background = "#fff3e0";
+          card.style.color = "#ef6c00";
+          card.innerText = "Calculating...";
+
+          fetch("/predict", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.error) {
+                card.style.background = "#ffebee";
+                card.style.color = "#c62828";
+                card.innerText = "Error: " + data.error;
+              } else {
+                // Success styling
+                const isHighIncome = data.prediction_text.includes(">50K");
+                card.style.background = isHighIncome ? "#e8f5e9" : "#e3f2fd";
+                card.style.color = isHighIncome ? "#2e7d32" : "#1565c0";
+                card.style.border = isHighIncome
+                  ? "1px solid #a5d6a7"
+                  : "1px solid #90caf9";
+
+                card.innerText = "Result: " + data.prediction_text;
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              card.innerText = "An error occurred. Check console.";
+            });
+        });
+    </script>
+  </body>
+</html>
